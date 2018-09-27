@@ -8,3 +8,8 @@
 .score-board tbody tr:nth-child(odd) {
   background-color: #eee;
 }
+
+.score-board .player.offline {
+  font-style: italic;
+  color: #888;
+}

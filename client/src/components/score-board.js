@@ -2,12 +2,12 @@ import React from 'react';
 
 import './score-board.css';
 
-const ScoreLine = ({player, score}) => (
+const ScoreLine = ({id, score, online}) => (score || online) ? (
   <tr className="score-line">
-    <td className="player">{player}</td>
+    <td className={'player' + (online ? '' : ' offline')}>{id}</td>
     <td className="score">{score}</td>
   </tr>
-);
+) : null;
 
 const ScoreBoard = ({scores}) => (
   <table className="score-board">
@@ -19,7 +19,7 @@ const ScoreBoard = ({scores}) => (
     </thead>
     <tbody>
       {scores.map((score) => (
-        <ScoreLine key={score.player} {...score} />
+        <ScoreLine key={score.id} {...score} />
       ))}
     </tbody>
   </table>

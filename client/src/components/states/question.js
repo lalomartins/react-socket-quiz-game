@@ -1,5 +1,7 @@
 import React from 'react';
 
+import './question.css';
+
 const Question = ({actions, proposition}) => (
   <div className="question">
     <p className="proposition">{proposition}</p>

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-// import io from 'socket.io-client';
+import io from 'socket.io-client';
 
 import './App.css';
 
@@ -20,7 +20,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      gameState: 'BetweenTurns',
+      gameState: 'connecting',
       stateData: {},
       playerId: 1,
       score: 0,
@@ -33,11 +33,38 @@ class App extends Component {
   }
 
   componentWillMount() {
-    // this.socket = io('http://localhost:3001');
-    // this.socket.on('connection', (socket) => {
-    //   this.setState({connected: true});
-    //   socket.on('disconnect', () => {this.setState({gameState: 'connecting'});})
-    // });
+    const socket = this.socket = io(`http://${window.location.hostname}:3001`);
+    socket.on('login', this.handleLogin.bind(this));
+    socket.on('connect', this.handleConnect.bind(this));
+    socket.on('disconnect', this.handleDisconnect.bind(this))
+    socket.on('set-state', this.setGameState.bind(this));
+    socket.on('update-scores', this.updateScoreBoard.bind(this));
+  }
+
+  handleConnect() {
+    this.socket.emit('login', {id: localStorage.getItem('playerId')});
+  }
+
+  handleDisconnect() {
+    this.setState({gameState: 'connecting'});
+  }
+
+  handleLogin({id}) {
+    this.setState({playerId: id});
+    localStorage.setItem('playerId', id);
+  }
+
+  setGameState(state, data) {
+    console.log('new game state', state, data);
+    this.setState({
+      gameState: state,
+      stateData: data,
+    });
+  }
+
+  updateScoreBoard(scoreBoard) {
+    console.log('updade score', scoreBoard);
+    this.setState({scoreBoard});
   }
 
   sendAnswer(answer) {
