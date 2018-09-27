@@ -9,6 +9,8 @@ import BetweenTurns from './states/between-turns';
 import Question from './states/question';
 import WrongAnswer from './states/wrong-answer';
 
+const SERVER_ADDRESS = process.env.SERVER_ADDRESS || `http://${window.location.hostname}:3001`;
+
 const componentsByState = {
   BetweenTurns,
   Question,
@@ -33,7 +35,7 @@ class App extends Component {
   }
 
   componentWillMount() {
-    const socket = this.socket = io(`http://${window.location.hostname}:3001`);
+    const socket = this.socket = io(SERVER_ADDRESS);
     socket.on('login', this.handleLogin.bind(this));
     socket.on('connect', this.handleConnect.bind(this));
     socket.on('disconnect', this.handleDisconnect.bind(this))
@@ -67,15 +69,8 @@ class App extends Component {
     this.setState({scoreBoard});
   }
 
-  sendAnswer(answer) {
-    if (answer) {
-      this.setState({
-        gameState: 'BetweenTurns',
-        stateData: {winner: this.state.playerId, waitTime: 5},
-      });
-    } else {
-      this.setState({gameState: 'WrongAnswer'});
-    }
+  sendAnswer(proposition, answer) {
+    this.socket.emit('answer', proposition, answer);
   }
 
   render() {

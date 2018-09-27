@@ -67,10 +67,28 @@ function login({id}) {
   }
   const player = players[id - 1];
   player.socket = this;
+  this.player = player;
   this.emit('login', {id});
   io.emit('update-scores', players.scores());
   sendState(this);
   console.log(`connection ${this.id} logged in as player ${id}`);
+}
+
+function processAnswer(proposition, answer) {
+  if (this.player && state.state === 'Question') {
+    console.log(`got answer from ${this.id} for ${proposition}: ${answer}`);
+    if (answer === state.correctAnswer) {
+      state.state = 'BetweenTurns';
+      state.waitTime = 5;
+      state.lastWinner = this.player.id;
+      this.player.score += 1;
+      sendState();
+    } else {
+      this.player.score -= 1;
+      this.emit('set-state', 'WrongAnswer', {});
+    }
+    io.emit('update-scores', players.scores());
+  }
 }
 
 io.on('connection', (socket) => {
@@ -78,12 +96,11 @@ io.on('connection', (socket) => {
   // broadcast the scores because it includes the online flag
   socket.emit('update-scores', players.scores());
   socket.on('login', login.bind(socket));
+  socket.on('answer', processAnswer.bind(socket));
   socket.on('disconnect', () => {
-    for (const p of players) {
-      if (p.socket === socket) {
-        p.socket = null;
-        io.emit('update-scores', players.scores());
-      }
+    if (socket.player) {
+      socket.player.socket = null;
+      io.emit('update-scores', players.scores());
     }
   })
 });
