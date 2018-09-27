@@ -1,0 +1,27 @@
+{
+  "name": "calc-game-server",
+  "version": "1.0.0",
+  "description": "A simple calculation game (real-time server)",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lalomartins/calc-game.git"
+  },
+  "author": "Lalo Martins <lalo.martins@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lalomartins/calc-game/issues"
+  },
+  "homepage": "https://github.com/lalomartins/calc-game#readme",
+  "dependencies": {
+    "prettier": "^1.14.3",
+    "socket.io": "^2.1.1"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "bracketSpacing": false,
+    "singleQuote": true,
+    "arrowParens": "always"
+  }
+}
