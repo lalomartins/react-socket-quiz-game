@@ -1,6 +1,8 @@
 const io = require('socket.io')(3001);
 const fs = require('fs');
 
+const createQuestion = require(process.env.QUESTIONS_MODULE || './questions/simple-math');
+
 const state = {
   state: 'BetweenTurns',
   proposition: null,
@@ -14,9 +16,10 @@ setInterval(() => {
     if (state.waitTime === Infinity) state.waitTime = 5;
     else state.waitTime -= 1;
     if (state.waitTime === 0) {
+      const {proposition, answer} = createQuestion();
       state.state = 'Question';
-      state.proposition = 'True or False?';
-      state.correctAnswer = true;
+      state.proposition = proposition;
+      state.correctAnswer = answer;
     }
     sendState();
   }
