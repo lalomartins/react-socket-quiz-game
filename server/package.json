@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "A simple calculation game (real-time server)",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "start": "node index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lalomartins/calc-game.git"
